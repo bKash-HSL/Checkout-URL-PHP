@@ -1,6 +1,6 @@
 <?php
 
-session_start();
+// session_start();
 
 $credentials_json = file_get_contents('config.json'); 
 $credentials_arr = json_decode($credentials_json,true);
@@ -13,7 +13,7 @@ function getToken()
         'app_key' => $credentials_arr['app_key'],
         'app_secret' => $credentials_arr['app_secret']
     );
-    $url = curl_init($credentials_arr['base_url']."/checkout/token/grant");
+
     $post_token = json_encode($post_token);
     $header = array(
         'Content-Type:application/json',
@@ -21,6 +21,7 @@ function getToken()
         "username:". $credentials_arr['username']
     );
     
+    $url = curl_init($credentials_arr['base_url']."/checkout/token/grant");
     curl_setopt($url, CURLOPT_HTTPHEADER, $header);
     curl_setopt($url, CURLOPT_CUSTOMREQUEST, "POST");
     curl_setopt($url, CURLOPT_RETURNTRANSFER, true);
@@ -28,10 +29,12 @@ function getToken()
     curl_setopt($url, CURLOPT_FOLLOWLOCATION, 1);
     $result_data = curl_exec($url);
     curl_close($url);
+
+    $result_data = curlWithBody('/checkout/token/grant',);
         
     $response = json_decode($result_data, true);
 
-    $_SESSION["token"] = $response['id_token'];
+    // $_SESSION["token"] = $response['id_token'];
 
     return $response['id_token'];
 }
